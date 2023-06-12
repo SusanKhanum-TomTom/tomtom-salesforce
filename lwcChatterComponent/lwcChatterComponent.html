@@ -1,0 +1,68 @@
+<template>
+    <div class="slds-feed">
+
+        <div class="slds-p-around_small slds-post">
+        <lightning-input-rich-text label="Post Content" value={postContent} onchange={handlePostContentChange} required="true">
+        </lightning-input-rich-text>
+
+    </div>
+        <template if:true={optionsLoaded}>
+            <div class="slds-p-left_x-small slds-p-right_x-small slds-m-left_medium slds-m-right_medium">
+                <c-reusable-multiselect-lookup objectname="User" placeholder="mention a user.." onselected={handleUserSelection1} ondeselected={handleRemoveUser} onchange={handleUserSelection1} isposted={isPosted} refresh-data={refreshData}></c-reusable-multiselect-lookup>
+            </div>
+        </template>
+
+        
+        <div class="slds-text-align_right slds-p-right_medium">
+        <lightning-button label="Post" onclick={handlePostButtonClick}></lightning-button>
+    </div>
+        <div class="slds-post__content slds-text-longform">
+            <lightning-accordion active-section-name="Activity">
+                <lightning-accordion-section name="Activity" label="Recent Activity">
+                    <template if:true={feedItems}>
+                        <template for:each={feedItems} for:item="feedItem" for:index="index">
+                            <div key={feedItem.id}>
+
+                                <div class="slds-box slds-p-around_x-small slds-feed__item-comments slds-p-bottom_x-small">
+                                    <template if:true={feedItem.isOwnedByMe}>
+                                    <lightning-button-menu class="slds-button slds-button_icon slds-button_icon-x-small slds-float_right">
+                                        <lightning-menu-item onclick={handleEditPost} class="slds-dropdown_left" value="Edit" label="Edit" data-record-id={feedItem.Id} data-index={index} ></lightning-menu-item>
+                                       
+                                        <lightning-menu-item onclick={handleDeletePost} class="slds-dropdown_left" value="Delete" label="Delete" data-record-id={feedItem.Id} data-index={index}></lightning-menu-item>
+                                       
+                                    </lightning-button-menu>
+                                </template>
+                                    <a><lightning-formatted-text value={feedItem.CreatedBy.Name}></lightning-formatted-text></a><br/>
+                                    <lightning-formatted-date-time value={feedItem.CreatedDate}></lightning-formatted-date-time>
+                                
+                                    <lightning-formatted-rich-text value={feedItem.Body}></lightning-formatted-rich-text><br/>
+                                </div>
+                                <div if:true={editPost} class="slds-modal slds-fade-in-open">
+                                    <div class="slds-modal__container">
+                                        
+                                          <header class="slds-modal__header">
+                                            <h1 class="slds-modal__title slds-hyphenate">Edit Post</h1>
+                                        </header>
+                                        <div class="slds-modal__content slds-p-around_medium">
+                                    <lightning-input-rich-text label="Post Content" value={editPostContent} data-record-id={feedItemId} onchange={handleEditPostContentChange}>
+                                        </lightning-input-rich-text>
+                                        </div>
+                                        <footer class="slds-modal__footer">
+                                            <button class="slds-button slds-button_neutral" onclick={handleCancel}>Cancel</button>
+                                            <button class="slds-button slds-button_brand" onclick={handlePostButtonClick}>Save</button>
+                                        </footer>
+                                    </div>
+                                </div>
+                                </div> 
+
+                            
+                        </template>
+                    </template>
+                    <template if:false={arrayLength}>
+                        No recent activity found.
+                    </template>
+                </lightning-accordion-section>
+            </lightning-accordion>
+        </div>
+    </div>
+</template>

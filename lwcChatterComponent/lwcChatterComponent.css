@@ -1,0 +1,6 @@
+.section{
+    display: block;
+    border-style: solid;
+    border-width: 0.1px;
+    border-color: silver;
+}
